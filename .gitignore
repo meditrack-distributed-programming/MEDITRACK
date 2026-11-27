@@ -1,0 +1,28 @@
+# Build output
+build/
+.gradle/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
+
+# Environment files (only the example is versioned)
+.env
+.env.*
+!.env.example
+
+# Terraform state and working directory
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Keys and certificates
+*.pem
+*.key
+
+# n8n credential exports
+automation/n8n/credentials/
+*credentials*.json
