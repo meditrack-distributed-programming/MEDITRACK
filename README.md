@@ -91,6 +91,6 @@ Refs: MED-44
 
 ## Pull requests
 
-- Feature work targets `develop` and is squash merged.
+- Feature work targets `develop` and is merged with a merge commit.
 - The title is a Conventional Commit header with the Jira key, for example `feat(ms01): add ldaps login endpoint [MED-44]`.
 - Required checks: build and tests of the affected service, commitlint, branch name and pull request title.
