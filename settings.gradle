@@ -1,0 +1,4 @@
+rootProject.name = 'meditrack'
+
+include ':services:ms01-identity'
+include ':services:ms06-notifications'

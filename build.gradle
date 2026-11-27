@@ -1,0 +1,23 @@
+// Common configuration for every module of the monorepo.
+// Container projects such as ':services' have no code and are skipped.
+configure(subprojects.findAll { it.childProjects.isEmpty() }) {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(Javadoc).configureEach {
+        options.encoding = 'UTF-8'
+    }
+}

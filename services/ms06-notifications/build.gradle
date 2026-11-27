@@ -1,0 +1,6 @@
+plugins {
+    id 'java'
+}
+
+group = 'ec.edu.uce.meditrack'
+version = '0.1.0-SNAPSHOT'
