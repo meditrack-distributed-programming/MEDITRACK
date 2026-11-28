@@ -1,0 +1,68 @@
+name: commitlint
+
+on:
+  pull_request:
+    branches: [develop, qa, main]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install commitlint
+        run: npm install --no-save @commitlint/cli@19 @commitlint/config-conventional@19
+      - name: Validate commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
+  branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch name
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          # Promotions between long-lived branches do not follow the task branch format
+          case "$HEAD_BRANCH->$BASE_BRANCH" in
+            "develop->qa"|"qa->main"|"main->develop")
+              echo "Promotion pull request: $HEAD_BRANCH -> $BASE_BRANCH"; exit 0 ;;
+          esac
+          PATTERN='^((feature|fix|refactor|test|docs|infra|ci|chore|spike|hotfix)/MED-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*|release/v[0-9]+\.[0-9]+\.[0-9]+)$'
+          if [[ ! "$HEAD_BRANCH" =~ $PATTERN ]]; then
+            echo "Invalid branch name: $HEAD_BRANCH"; exit 1
+          fi
+          if (( ${#HEAD_BRANCH} > 60 )); then
+            echo "Branch name longer than 60 characters: $HEAD_BRANCH"; exit 1
+          fi
+
+  pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate pull request title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          case "$HEAD_BRANCH->$BASE_BRANCH" in
+            "develop->qa"|"qa->main"|"main->develop")
+              echo "Promotion pull request: title check not required"; exit 0 ;;
+          esac
+          npm install --no-save @commitlint/cli@19 @commitlint/config-conventional@19
+          printf '%s\n' "$PR_TITLE" | npx commitlint --verbose
