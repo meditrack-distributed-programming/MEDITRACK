@@ -5,6 +5,15 @@ spring:
 server:
   port: ${SERVER_PORT:8081}
 
+meditrack:
+  directory:
+    url: ${LDAP_URL:ldaps://localhost:636}
+    domain: ${LDAP_DOMAIN:meditrack.local}
+    base-dn: ${LDAP_BASE_DN:OU=MediTrack,DC=meditrack,DC=local}
+    ca-certificate: ${LDAP_CA_CERTIFICATE:}
+    connect-timeout: 2s
+    read-timeout: 3s
+
 management:
   endpoints:
     web:
@@ -16,6 +25,7 @@ management:
         enabled: true
       show-details: never
   health:
-    # Enabled again in MED-42, when the LDAPS connection to the directory is configured
+    # The default check opens an anonymous connection that skips the sign-in rules of the adapter.
+    # The state of the directory is reported by its circuit breaker (MED-29)
     ldap:
       enabled: false
