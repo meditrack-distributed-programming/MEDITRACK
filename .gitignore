@@ -22,6 +22,9 @@ node_modules/
 # Keys and certificates
 *.pem
 *.key
+*.crt
+*.csr
+*.p12
 
 # n8n credential exports
 automation/n8n/credentials/

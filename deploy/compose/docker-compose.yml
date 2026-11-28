@@ -1,0 +1,25 @@
+# Local environment of MediTrack. More services are added by later tasks.
+name: meditrack
+
+services:
+  samba-ad:
+    build: ../samba-ad
+    image: meditrack/samba-ad:local
+    hostname: dc1
+    environment:
+      SAMBA_REALM: ${SAMBA_REALM:-MEDITRACK.LOCAL}
+      SAMBA_DOMAIN: ${SAMBA_DOMAIN:-MEDITRACK}
+      # Left empty, a random password is generated on the first start
+      SAMBA_ADMIN_PASSWORD: ${SAMBA_ADMIN_PASSWORD:-}
+    ports:
+      # LDAPS only, reachable from this computer and not from the network
+      - "127.0.0.1:${LDAPS_PORT:-636}:636"
+    volumes:
+      - samba-config:/etc/samba
+      - samba-data:/var/lib/samba
+    restart: unless-stopped
+    # The health check is defined in the image, so services can wait for service_healthy
+
+volumes:
+  samba-config:
+  samba-data:
