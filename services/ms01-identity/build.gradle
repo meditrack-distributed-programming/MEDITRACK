@@ -1,6 +1,26 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot'
 }
 
 group = 'ec.edu.uce.meditrack'
 version = '0.1.0-SNAPSHOT'
+
+dependencies {
+    // The Spring Boot BOM manages the versions of the libraries below
+    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-ldap'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Library only: migrations are activated in MED-46, when the database exists
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'com.tngtech.archunit:archunit-junit5:1.5.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

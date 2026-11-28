@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: ms01-identity
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    # Enabled again in MED-42, when the LDAPS connection to the directory is configured
+    ldap:
+      enabled: false
